@@ -44,6 +44,7 @@ final class EntityExistValidator extends ConstraintValidator
                 ->setParameter('%entity%', $constraint->entity)
                 ->setParameter('%property%', $constraint->property)
                 ->setParameter('%value%', (string) $value)
+                ->setCode(EntityExist::NOT_FOUND_ERROR)
                 ->addViolation();
         }
     }

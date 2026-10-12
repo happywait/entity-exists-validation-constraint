@@ -64,7 +64,7 @@ class EntityExistValidatorTest extends TestCase
             ->expects($this->once())
             ->method('findOneBy')
             ->with(['id' => 'foobar'])
-            ->willReturn('my_user');
+            ->willReturn(new \stdClass());
 
         $this->entityManager
             ->expects($this->once())
@@ -92,7 +92,7 @@ class EntityExistValidatorTest extends TestCase
             ->expects($this->exactly(0))
             ->method('findOneBy')
             ->with(['id' => $value])
-            ->willReturn('my_user');
+            ->willReturn(new \stdClass());
 
         $this->entityManager
             ->expects($this->exactly(0))
@@ -124,7 +124,7 @@ class EntityExistValidatorTest extends TestCase
             ->expects($this->once())
             ->method('findOneBy')
             ->with(['uuid' => 'foobar'])
-            ->willReturn('my_user');
+            ->willReturn(new \stdClass());
 
         $this->entityManager
             ->expects($this->once())
@@ -139,8 +139,10 @@ class EntityExistValidatorTest extends TestCase
     {
         $violationBuilder = $this->getMockBuilder(ConstraintViolationBuilderInterface::class)->getMock();
         $violationBuilder->method('setParameter')->will($this->returnSelf());
+        $violationBuilder->expects($this->once())->method('setCode')->with(EntityExist::NOT_FOUND_ERROR)->will($this->returnSelf());
+        $violationBuilder->expects($this->once())->method('addViolation');
 
-        $this->context->expects($this->once())->method('buildViolation')->willReturn($violationBuilder);
+        $this->context->expects($this->once())->method('buildViolation')->with('This value does not exist.')->willReturn($violationBuilder);
         $constraint = new EntityExist();
         $constraint->entity = 'App\Entity\User';
 
@@ -181,7 +183,7 @@ class EntityExistValidatorTest extends TestCase
             ->expects($this->once())
             ->method('findOneBy')
             ->with(['uuid' => 'foobar'])
-            ->willReturn('my_user');
+            ->willReturn(new \stdClass());
 
         $this->entityManager
             ->expects($this->once())
